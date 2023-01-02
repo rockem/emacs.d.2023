@@ -77,7 +77,12 @@
 #+begin_src emacs-lisp
   (column-number-mode)
   (setq display-line-numbers 'relative)
-  (global-display-line-numbers-mode relative)
+  (global-display-line-numbers-mode t)
+
+  (dolist (mode '(org-mode-hook
+		  trm-mode-hook
+		  eshell-mode-hook))
+    (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
 * Auto completion
 ** Vertico
@@ -139,7 +144,14 @@
     ;; Enable recursive minibuffers
       (setq enable-recursive-minibuffers t))
   #+end_src
-
+  
+* Keymaps
+#+begin_src emacs-lisp
+  (use-package which-key
+    :init (which-key-mode)
+    :config
+    (setq which-key-idle-delay 0.3))
+#+end_src
 * History
   #+begin_src emacs-lisp
     (use-package savehist
