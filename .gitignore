@@ -4,3 +4,5 @@ history
 eshell
 elpa
 config.el
+games/
+transient/
