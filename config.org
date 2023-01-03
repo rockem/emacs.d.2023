@@ -51,7 +51,7 @@
 ** Theme
 
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :font "DejaVu Sans Mono" :height 180)
+  (set-face-attribute 'default nil :font "Iosevka" :height 180)
 
   (use-package all-the-icons)
 
@@ -184,6 +184,11 @@
   ;;   (all-the-icons-completion-mode))
 #+end_src
 
+** Consult
+#+begin_src emacs-lisp
+  (use-package consult
+    )
+#+end_src
 * Keymaps
 ** General
 
