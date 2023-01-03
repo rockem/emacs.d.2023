@@ -3,6 +3,7 @@
 
 * Package manager
 ** Setup package with repositories
+
 #+begin_src emacs-lisp
 
   (require 'package)
@@ -18,8 +19,9 @@
   (package-initialize)
 
 #+end_src
-  
+
 ** Setup use-package
+
 #+begin_src emacs-lisp
   (unless (package-installed-p 'use-package)
     (package-install 'use-package))
@@ -28,9 +30,10 @@
   (require 'use-package)
   (setq use-package-always-ensure t)
 #+end_src
-  
+
 * Appearance
 ** General settings
+
 #+begin_src emacs-lisp 
   (setq inhibit-startup-message t)
 
@@ -44,8 +47,9 @@
   (setq visible-bell t)
 
 #+end_src
-  
+
 ** Theme
+
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil :font "DejaVu Sans Mono" :height 180)
 
@@ -56,7 +60,7 @@
     ;; Global settings (defaults)
     (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
 	  doom-themes-enable-italic t) ; if nil, italics is universally disabled
-    (load-theme 'doom-one t)
+    (load-theme 'doom-oceanic-next t)
 
     ;; Enable flashing mode-line on errors
     (doom-themes-visual-bell-config)
@@ -73,19 +77,23 @@
     :config
     (doom-modeline-mode 1))
 #+end_src
+
 ** Line numbers
+
 #+begin_src emacs-lisp
   (column-number-mode)
+  (setq display-line-numbers-type 'relative)
   (global-display-line-numbers-mode t)
-  (setq display-line-numbers 'relative)
 
   (dolist (mode '(org-mode-hook
 		  trm-mode-hook
 		  eshell-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
+
 * Auto completion
 ** Vertico
+
 #+begin_src emacs-lisp
   (use-package vertico
     :init
@@ -105,6 +113,7 @@
 #+end_src
 
 ** Marginalia
+
 #+begin_src emacs-lisp
   (use-package marginalia
     ;; Either bind `marginalia-cycle' globally or only in the minibuffer
@@ -123,6 +132,7 @@
 #+end_src
 
 ** Orderless
+
 #+begin_src emacs-lisp
   (use-package orderless
     :init
@@ -135,6 +145,7 @@
 #+end_src
 
 ** Usefull general settings
+
 #+begin_src emacs-lisp
   (use-package emacs
     :init
@@ -164,6 +175,7 @@
 #+end_src
 
 ** Completion icons
+
 #+begin_src emacs-lisp
   ;; (use-package all-the-icons-completion
   ;;   :after (marginalia all-the-icons)
@@ -171,8 +183,10 @@
   ;;   :init
   ;;   (all-the-icons-completion-mode))
 #+end_src
+
 * Keymaps
 ** General
+
 #+begin_src emacs-lisp
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
@@ -183,7 +197,9 @@
      :prefix "SPC"
      :non-normal-prefix "M-SPC"))
 #+end_src
+
 ** Which key
+
 #+begin_src emacs-lisp
   (use-package which-key
     :init (which-key-mode)
@@ -192,6 +208,7 @@
 #+end_src
 
 ** Evil
+
 #+begin_src emacs-lisp
   (use-package evil
     :init
@@ -207,7 +224,9 @@
     :config
     (evil-collection-init))
 #+end_src
+
 * History
+
 #+begin_src emacs-lisp
   (use-package savehist
     :init
@@ -216,6 +235,7 @@
 
 * Help related
 ** Helpful
+
 #+begin_src emacs-lisp
   (use-package helpful
     :bind
