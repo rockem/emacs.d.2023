@@ -51,8 +51,7 @@
 ** Theme
 
 #+begin_src emacs-lisp
-    (set-face-attribute 'default nil :font "Iosevka" :height 180)
-
+  (set-face-attribute 'default nil :font "Iosevka" :height 200)
     (use-package all-the-icons)
 
     (use-package doom-themes
@@ -198,10 +197,10 @@
 
   (use-package general
     :config
-    (general-define-key
-     :keymaps '(normal insert emacs)
+    (general-create-definer elis/leader-keys
+     :keymaps '(normal insert visual emacs)
      :prefix "SPC"
-     :non-normal-prefix "M-SPC"))
+     :global-prefix "M-SPC"))
 #+end_src
 
 ** Which key
@@ -241,6 +240,29 @@
   (use-package savehist
     :init
     (savehist-mode))
+#+end_src
+
+* Project
+** Projectile
+
+#+begin_src emacs-lisp
+    (use-package projectile
+      :config (projectile-mode)
+      :init
+      ;; Main leader key for projectile
+      (elis/leader-keys
+       "p" '("Projectile" . projectile-command-map))
+      ;; Whcih key alterations
+      (push '((nil . "-") . (nil . " ")) which-key-replacement-alist)
+      (push '((nil . "^projectile-") . (nil . "")) which-key-replacement-alist)
+      (which-key-add-key-based-replacements
+	"SPC p !" "shell command"
+	"SPC p &" "async shell command"
+	"SPC p ESC" "Most recent buffer") 
+      ;; Main code directory
+      (when (file-directory-p "~/Source")
+	(setq projectile-project-search-path '("~/Source")))
+      (setq projectile-switch-project-action #'projectile-dired))
 #+end_src
 
 * Help related
