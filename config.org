@@ -42,40 +42,41 @@
   (tooltip-mode -1)
   (set-fringe-mode 10)
 
-  (menu-bar-mode -1)
+  (if (eq system-type 'darwin)
+    (menu-bar-mode -1))
 
   (setq visible-bell t)
-
 #+end_src
 
 ** Theme
 
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :font "Iosevka" :height 180)
+    (set-face-attribute 'default nil :font "Iosevka" :height 180)
 
-  (use-package all-the-icons)
+    (use-package all-the-icons)
 
-  (use-package doom-themes
-    :config
-    ;; Global settings (defaults)
-    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-	  doom-themes-enable-italic t) ; if nil, italics is universally disabled
-    (load-theme 'doom-oceanic-next t)
+    (use-package doom-themes
+      :config
+      ;; Global settings (defaults)
+      (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+	    doom-themes-enable-italic t) ; if nil, italics is universally disabled
+      (load-theme 'doom-oceanic-next t)
 
-    ;; Enable flashing mode-line on errors
-    (doom-themes-visual-bell-config)
-    ;; or for treemacs users
-    (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
-    (doom-themes-treemacs-config)
-    ;; Corrects (and improves) org-mode's native fontification.
-    (doom-themes-org-config))
+      ;; Enable flashing mode-line on errors
+      (doom-themes-visual-bell-config)
+      ;; or for treemacs users
+      (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+      (doom-themes-treemacs-config)
+      ;; Corrects (and improves) org-mode's native fontification.
+      (doom-themes-org-config))
 
-  (use-package doom-modeline
-    :custom-face
-    (mode-line ((t (:height 0.95))))
-    (mode-line-inactive ((t (:height 0.95))))
-    :config
-    (doom-modeline-mode 1))
+    (use-package doom-modeline
+      :custom-face
+      (mode-line ((t (:height 0.95))))
+      (mode-line-inactive ((t (:height 0.95))))
+      :config
+      (setq doom-modeline-major-mode-icon nil)
+      (doom-modeline-mode 1))
 #+end_src
 
 ** Line numbers
@@ -228,6 +229,10 @@
     :after evil
     :config
     (evil-collection-init))
+
+  (use-package evil-commentary
+    :config
+    (evil-commentary-mode))
 #+end_src
 
 * History
@@ -248,4 +253,13 @@
     ([remap describe-command] . helpful-command)
     ([remap describe-variable] . helpful-variable)
     ([remap describe-key] . helpful-key))
+#+end_src
+
+* Org mode
+** Bullets
+
+#+begin_src emacs-lisp
+  (use-package org-bullets
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 #+end_src
