@@ -6,3 +6,5 @@ elpa
 config.el
 games/
 transient/
+bookmarks
+projectile-*

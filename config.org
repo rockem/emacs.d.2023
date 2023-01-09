@@ -48,6 +48,14 @@
   (setq visible-bell t)
 #+end_src
 
+** Scrolling
+
+#+begin_src emacs-lisp
+  (pixel-scroll-mode t)
+  (setq scroll-step 1 scroll-conservatively 10000)
+  (setq scroll-margin 3)
+#+end_src
+
 ** Theme
 
 #+begin_src emacs-lisp
