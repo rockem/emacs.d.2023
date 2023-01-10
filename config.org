@@ -42,7 +42,7 @@
   (tooltip-mode -1)
   (set-fringe-mode 10)
 
-  (if (eq system-type 'darwin)
+  (if (not (eq system-type 'darwin))
     (menu-bar-mode -1))
 
   (setq visible-bell t)
@@ -193,10 +193,12 @@
 #+end_src
 
 ** Consult
+
 #+begin_src emacs-lisp
   (use-package consult
     )
 #+end_src
+
 * Keymaps
 ** General
 
