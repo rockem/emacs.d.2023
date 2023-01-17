@@ -1,3 +1,6 @@
+(when (eq system-type 'darwin) 
+  (customize-set-variable 'native-comp-driver-options '("-Wl,-w")))
+
 (org-babel-load-file
  (expand-file-name
   "config.org"
