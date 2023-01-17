@@ -1,23 +1,28 @@
 #+title: 2023 Emacs config
 #+author: Eli Segal
 
+* General
+** Performances
+
+#+begin_src emacs
+;; Make gc pauses faster by decreasing the threshold.
+(setq gc-cons-threshold (* 2 1000 1000))
+#+end_src
+
 * Package manager
 ** Setup package with repositories
 
 #+begin_src emacs-lisp
-
   (require 'package)
 
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
 			   ("melpa-stable" . "https://stable.melpa.org/packages/")
 			   ("org" . "https://orgmode.org/elpa/")
 			   ("elpa" . "https://elpa.gnu.org/packages/")))
-
+  
+  (package-initialize)
   (unless package-archive-contents
     (package-refresh-contents))
-
-  (package-initialize)
-
 #+end_src
 
 ** Setup use-package
@@ -25,7 +30,6 @@
 #+begin_src emacs-lisp
   (unless (package-installed-p 'use-package)
     (package-install 'use-package))
-
 
   (require 'use-package)
   (setq use-package-always-ensure t)
@@ -46,6 +50,7 @@
     (menu-bar-mode -1))
 
   (setq visible-bell t)
+  (setq use-dialog-box nil)
 #+end_src
 
 ** Scrolling
@@ -59,23 +64,39 @@
 ** Theme
 
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :font "Iosevka" :height 200)
-    (use-package all-the-icons)
+  (set-face-attribute 'default nil :font "Iosevka" :height 200 :weight 'normal)
+  (use-package all-the-icons)
 
-    (use-package doom-themes
-      :config
-      ;; Global settings (defaults)
-      (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-	    doom-themes-enable-italic t) ; if nil, italics is universally disabled
-      (load-theme 'doom-oceanic-next t)
+  (use-package modus-themes
+    :pin melpa
+    :init
+    ;; (setq modus-themes-paren-match
+    (setq modus-themes-vivendi-color-overrides
+	  '((bg-main . "#1d20FF")))
+    (setq
+     modus-themes-common-palette-overrides '((bg-paren-match bg-blue-intense))
+     modus-themes-org-blocks 'gray-background
+     modus-themes-paren-match '(intense)
+     modus-themes-italic-constructs t
+     modus-themes-bold-constructs t)
+    :config
+    (load-theme 'modus-operandi-tinted :noconfirm))
 
-      ;; Enable flashing mode-line on errors
-      (doom-themes-visual-bell-config)
-      ;; or for treemacs users
-      (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
-      (doom-themes-treemacs-config)
-      ;; Corrects (and improves) org-mode's native fontification.
-      (doom-themes-org-config))
+
+    ;; (use-package doom-themes
+    ;;   :config
+    ;;   ;; Global settings (defaults)
+    ;;   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+    ;; 	  doom-themes-enable-italic t) ; if nil, italics is universally disabled
+    ;;   (load-theme 'doom-oceanic-next t)
+
+    ;;   ;; Enable flashing mode-line on errors
+    ;;   (doom-themes-visual-bell-config)
+    ;;   ;; or for treemacs users
+    ;;   (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+    ;;   (doom-themes-treemacs-config)
+    ;;   ;; Corrects (and improves) org-mode's native fontification.
+    ;;   (doom-themes-org-config))
 
     (use-package doom-modeline
       :custom-face
@@ -223,31 +244,41 @@
 ** Evil
 
 #+begin_src emacs-lisp
-  (use-package evil
-    :init
-    (setq evil-want-integration t)
-    (setq evil-want-keybinding nil)
-    (setq evil-want-C-u-scroll t)
-    (setq evil-want-C-i-jump nil)
-    :config
-    (evil-mode 1))
+  ;; (use-package evil
+  ;;   :init
+  ;;   (setq evil-want-integration t)
+  ;;   (setq evil-want-keybinding nil)
+  ;;   (setq evil-want-C-u-scroll t)
+  ;;   (setq evil-want-C-i-jump nil)
+  ;;   :config
+  ;;   (evil-mode 1))
 
-  (use-package evil-collection
-    :after evil
-    :config
-    (evil-collection-init))
+  ;; (use-package evil-collection
+  ;;   :after evil
+  ;;   :config
+  ;;   (evil-collection-init))
 
-  (use-package evil-commentary
-    :config
-    (evil-commentary-mode))
+  ;; (use-package evil-commentary
+  ;;   :config
+  ;;   (evil-commentary-mode))
 #+end_src
 
 * History
 
+Save recent visited files list
 #+begin_src emacs-lisp
-  (use-package savehist
-    :init
-    (savehist-mode))
+  (recentf-mode 1)
+#+end_src
+
+Save history of mini buffer commands
+#+begin_src emacs-lisp
+  (setq history-length 25)
+  (savehist-mode 1)
+#+end_src
+
+Save cusrsor last place for each visited file
+#+begin_src emacs-lisp
+  (save-place-mode 1)
 #+end_src
 
 * Project
@@ -293,3 +324,21 @@
     :config
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 #+end_src
+
+* Files
+** General
+Auto revert buffers with external changes
+#+begin_src emacs-lisp
+  (global-auto-revert-mode 1)
+  (setq global-auto-revert-non-files-buffers t)
+#+end_src
+
+* Git
+** Magit
+#+begin_src emacs-lisp
+  (use-package magit
+    :commands magit-status
+    :custom
+    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+#+end_src
+
