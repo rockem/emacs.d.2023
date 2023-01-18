@@ -64,7 +64,7 @@
 ** Theme
 
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :font "Iosevka" :height 200 :weight 'normal)
+  (set-face-attribute 'default nil :font "Iosevka" :height 180 :weight 'normal)
   (use-package all-the-icons)
 
   (use-package modus-themes
