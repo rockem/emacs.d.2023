@@ -4,12 +4,16 @@
 * General
 ** Performances
 
-#+begin_src emacs
-;; Make gc pauses faster by decreasing the threshold.
-(setq gc-cons-threshold (* 2 1000 1000))
+#+begin_src emacs-lisp
+  ;; Make gc paUses faster by decreasing the threshold.
+  (setq gc-cons-threshold (* 2 1000 1000))
 #+end_src
 
 * Package manager
+** Local repository
+#+begin_src emacs-lisp
+  (add-to-list 'load-path (expand-file-name "local-lisp" user-emacs-directory))
+#+end_src
 ** Setup package with repositories
 
 #+begin_src emacs-lisp
@@ -104,6 +108,7 @@
       (mode-line-inactive ((t (:height 0.95))))
       :config
       (setq doom-modeline-major-mode-icon nil)
+      (setq doom-modeline-vcs-max-length 30)
       (doom-modeline-mode 1))
 #+end_src
 
@@ -246,23 +251,23 @@
 ** Evil
 
 #+begin_src emacs-lisp
-  ;; (use-package evil
-  ;;   :init
-  ;;   (setq evil-want-integration t)
-  ;;   (setq evil-want-keybinding nil)
-  ;;   (setq evil-want-C-u-scroll t)
-  ;;   (setq evil-want-C-i-jump nil)
-  ;;   :config
-  ;;   (evil-mode 1))
+  (use-package evil
+    :init
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    (setq evil-want-C-u-scroll t)
+    (setq evil-want-C-i-jump nil)
+    :config
+    (evil-mode 1))
 
-  ;; (use-package evil-collection
-  ;;   :after evil
-  ;;   :config
-  ;;   (evil-collection-init))
+  (use-package evil-collection
+    :after evil
+    :config
+    (evil-collection-init))
 
-  ;; (use-package evil-commentary
-  ;;   :config
-  ;;   (evil-commentary-mode))
+  (use-package evil-commentary
+    :config
+    (evil-commentary-mode))
 #+end_src
 
 * History
@@ -319,6 +324,12 @@ Save cusrsor last place for each visited file
 #+end_src
 
 * Org mode
+** General
+
+#+begin_src emacs-lisp
+  (setq org-startup-folded t)
+#+end_src
+
 ** Bullets
 
 #+begin_src emacs-lisp
@@ -344,3 +355,19 @@ Auto revert buffers with external changes
     (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 #+end_src
 
+* Langueges
+** Swagger
+
+#+begin_src emacs-lisp
+  (require 'swagger-mode)
+#+end_src
+
+** Yaml
+#+begin_src emacs-lisp
+  (use-package yaml-mode
+    :config
+    (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+    (add-hook 'yaml-mode-hook
+      '(lambda ()
+        (define-key yaml-mode-map "\C-m" 'newline-and-indent))))
+#+end_src
