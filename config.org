@@ -1,19 +1,13 @@
 #+title: 2023 Emacs config
 #+author: Eli Segal
 
-* General
-** Performances
-
-#+begin_src emacs-lisp
-  ;; Make gc paUses faster by decreasing the threshold.
-  (setq gc-cons-threshold (* 2 1000 1000))
-#+end_src
-
 * Package manager
 ** Local repository
+
 #+begin_src emacs-lisp
   (add-to-list 'load-path (expand-file-name "local-lisp" user-emacs-directory))
 #+end_src
+
 ** Setup package with repositories
 
 #+begin_src emacs-lisp
@@ -37,6 +31,56 @@
 
   (require 'use-package)
   (setq use-package-always-ensure t)
+#+end_src
+
+** Try
+#+begin_src emacs-lisp
+  (use-package try)
+#+end_src
+
+* Keymaps
+** General
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+  (use-package general
+    :config
+    (general-create-definer elis/leader-key
+     :keymaps '(normal insert visual emacs)
+     :prefix "SPC"
+     :global-prefix "M-SPC"))
+#+end_src
+
+** Which key
+
+#+begin_src emacs-lisp
+  (use-package which-key
+    :init (which-key-mode)
+    :config
+    (setq which-key-idle-delay 1))
+#+end_src
+
+** Evil
+
+#+begin_src emacs-lisp
+  (use-package evil
+    :init
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    (setq evil-want-C-u-scroll t)
+    (setq evil-want-C-i-jump nil)
+    :config
+    (evil-mode 1))
+
+  (use-package evil-collection
+    :after evil
+    :config
+    (evil-collection-init))
+
+  (use-package evil-commentary
+    :config
+    (evil-commentary-mode))
 #+end_src
 
 * Appearance
@@ -65,51 +109,63 @@
   (setq scroll-margin 3)
 #+end_src
 
-** Theme
+** Fonts & Icons 
 
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :font "Iosevka" :height 180 :weight 'normal)
+  (set-face-attribute 'default nil :font "Iosevka" :height 190 :weight 'normal)
   (use-package all-the-icons)
+#+end_src
 
+** Themes
+
+#+begin_src emacs-lisp
   (use-package modus-themes
     :pin melpa
     :init
-    ;; (setq modus-themes-paren-match
+    ;; (setq modus-themes-paren-match)
     (setq modus-themes-vivendi-color-overrides
 	  '((bg-main . "#1d20FF")))
     (setq
      modus-themes-common-palette-overrides '((bg-paren-match bg-blue-intense))
+     modus-vivendi-tinted-palette-overrides '((bg-main "#2b2c3b"))
      modus-themes-org-blocks 'gray-background
      modus-themes-paren-match '(intense)
      modus-themes-italic-constructs t
      modus-themes-bold-constructs t)
+    (setq modus-themes-to-toggle '(modus-operandi-tinted modus-vivendi-tinted)) 
     :config
     (load-theme 'modus-operandi-tinted :noconfirm))
 
+  (use-package doom-themes
+    :config
+      ;; Global settings (defaults)
+      (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+	    doom-themes-enable-italic t) ; if nil, italics is universally disabled
+      ;; (load-theme 'doom-oceanic-next t)
 
-    ;; (use-package doom-themes
-    ;;   :config
-    ;;   ;; Global settings (defaults)
-    ;;   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-    ;; 	  doom-themes-enable-italic t) ; if nil, italics is universally disabled
-    ;;   (load-theme 'doom-oceanic-next t)
+      ;; Enable flashing mode-line on errors
+      (doom-themes-visual-bell-config)
+      ;; or for treemacs users
+      (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+      (doom-themes-treemacs-config)
+      ;; Corrects (and improves) org-mode's native fontification.
+      (doom-themes-org-config))
 
-    ;;   ;; Enable flashing mode-line on errors
-    ;;   (doom-themes-visual-bell-config)
-    ;;   ;; or for treemacs users
-    ;;   (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
-    ;;   (doom-themes-treemacs-config)
-    ;;   ;; Corrects (and improves) org-mode's native fontification.
-    ;;   (doom-themes-org-config))
+  (elis/leader-key
+   "t t" 'modus-themes-toggle :which-key "hello")
+#+end_src
 
-    (use-package doom-modeline
-      :custom-face
-      (mode-line ((t (:height 0.95))))
-      (mode-line-inactive ((t (:height 0.95))))
-      :config
-      (setq doom-modeline-major-mode-icon nil)
-      (setq doom-modeline-vcs-max-length 30)
-      (doom-modeline-mode 1))
+** Mode line
+
+#+begin_src emacs-lisp
+  (use-package doom-modeline
+    :custom-face
+    (mode-line ((t (:height 0.95))))
+    (mode-line-inactive ((t (:height 0.95))))
+    :config
+    (setq doom-modeline-major-mode-icon nil)
+    (setq doom-modeline-vcs-max-length 30)
+    (doom-modeline-mode 1))
 #+end_src
 
 ** Line numbers
@@ -225,51 +281,6 @@
     )
 #+end_src
 
-* Keymaps
-** General
-
-#+begin_src emacs-lisp
-  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-  (use-package general
-    :config
-    (general-create-definer elis/leader-keys
-     :keymaps '(normal insert visual emacs)
-     :prefix "SPC"
-     :global-prefix "M-SPC"))
-#+end_src
-
-** Which key
-
-#+begin_src emacs-lisp
-  (use-package which-key
-    :init (which-key-mode)
-    :config
-    (setq which-key-idle-delay 1))
-#+end_src
-
-** Evil
-
-#+begin_src emacs-lisp
-  (use-package evil
-    :init
-    (setq evil-want-integration t)
-    (setq evil-want-keybinding nil)
-    (setq evil-want-C-u-scroll t)
-    (setq evil-want-C-i-jump nil)
-    :config
-    (evil-mode 1))
-
-  (use-package evil-collection
-    :after evil
-    :config
-    (evil-collection-init))
-
-  (use-package evil-commentary
-    :config
-    (evil-commentary-mode))
-#+end_src
-
 * History
 
 Save recent visited files list
@@ -296,7 +307,7 @@ Save cusrsor last place for each visited file
       :config (projectile-mode)
       :init
       ;; Main leader key for projectile
-      (elis/leader-keys
+      (elis/leader-key
        "p" '("Projectile" . projectile-command-map))
       ;; Whcih key alterations
       (push '((nil . "-") . (nil . " ")) which-key-replacement-alist)
@@ -356,12 +367,6 @@ Auto revert buffers with external changes
 #+end_src
 
 * Langueges
-** Swagger
-
-#+begin_src emacs-lisp
-  (require 'swagger-mode)
-#+end_src
-
 ** Yaml
 #+begin_src emacs-lisp
   (use-package yaml-mode
@@ -370,4 +375,12 @@ Auto revert buffers with external changes
     (add-hook 'yaml-mode-hook
       '(lambda ()
         (define-key yaml-mode-map "\C-m" 'newline-and-indent))))
+#+end_src
+
+** Markdown
+
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :mode ("README\\.md'" . gfm-mode)
+    :init (setq markdown-command "multimarkdown"))
 #+end_src
