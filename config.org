@@ -76,7 +76,7 @@
   (use-package evil-collection
     :after evil
     :config
-    (evil-collection-init))
+    (evil-collection-init '(org-mode)))
 
   (use-package evil-commentary
     :config
@@ -349,12 +349,35 @@ Save cusrsor last place for each visited file
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 #+end_src
 
+** Org roam
+#+begin_src emacs-lisp
+  (use-package org-roam
+    :custom
+    (org-roam-directory "~/Documents/roam-notes")
+    :config
+    (org-roam-setup))
+#+end_src
+
 * Files
 ** General
 Auto revert buffers with external changes
 #+begin_src emacs-lisp
   (global-auto-revert-mode 1)
   (setq global-auto-revert-non-files-buffers t)
+#+end_src
+Disable default backup
+#+begin_src emacs-lisp
+  (setq auto-save-default nil)
+#+end_src
+
+** Auto save
+
+#+begin_src emacs-lisp
+  (use-package super-save
+    :init
+    (setq super-save-auto-save-when-idle t)
+    :config
+    (super-save-mode +1))
 #+end_src
 
 * Git
@@ -384,3 +407,4 @@ Auto revert buffers with external changes
     :mode ("README\\.md'" . gfm-mode)
     :init (setq markdown-command "multimarkdown"))
 #+end_src
+

@@ -10,3 +10,5 @@ bookmarks
 projectile-*
 recentf
 places
+*.db
+.org-id-locations
