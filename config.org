@@ -353,9 +353,14 @@ Save cusrsor last place for each visited file
 #+begin_src emacs-lisp
   (use-package org-roam
     :custom
+    ;; Make tags show up in autocomplete 
+    (setq org-roam-node-display-template
+	(concat "${title:*} "
+		(propertize "${tags:10}" 'face 'org-tag)))
     (org-roam-directory "~/Documents/roam-notes")
     :config
-    (org-roam-setup))
+    (org-roam-setup)
+    (org-roam-db-autosync-mode))
 #+end_src
 
 * Files
