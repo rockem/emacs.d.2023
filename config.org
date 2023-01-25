@@ -175,8 +175,7 @@
   (setq display-line-numbers-type 'relative)
   (global-display-line-numbers-mode t)
 
-  (dolist (mode '(org-mode-hook
-		  trm-mode-hook
+  (dolist (mode '(term-mode-hook
 		  eshell-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
@@ -353,12 +352,12 @@ Save cusrsor last place for each visited file
 #+begin_src emacs-lisp
   (use-package org-roam
     :custom
+    (org-roam-directory "~/Documents/roam-notes")
+    :config
     ;; Make tags show up in autocomplete 
     (setq org-roam-node-display-template
 	(concat "${title:*} "
 		(propertize "${tags:10}" 'face 'org-tag)))
-    (org-roam-directory "~/Documents/roam-notes")
-    :config
     (org-roam-setup)
     (org-roam-db-autosync-mode))
 #+end_src
