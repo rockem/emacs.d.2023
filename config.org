@@ -70,13 +70,14 @@
     (setq evil-want-keybinding nil)
     (setq evil-want-C-u-scroll t)
     (setq evil-want-C-i-jump nil)
+    (setq evil-disable-insert-state-bindings t)
     :config
     (evil-mode 1))
 
   (use-package evil-collection
     :after evil
     :config
-    (evil-collection-init '(org-mode)))
+    (evil-collection-init))
 
   (use-package evil-commentary
     :config
@@ -112,7 +113,7 @@
 ** Fonts & Icons 
 
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :font "Iosevka" :height 190 :weight 'normal)
+  (set-face-attribute 'default nil :font "Iosevka" :height 200 :weight 'normal)
   (use-package all-the-icons)
 #+end_src
 
@@ -394,6 +395,13 @@ Disable default backup
 #+end_src
 
 * Langueges
+** Tree sitter
+#+begin_src emacs-lisp
+      (use-package tree-sitter
+	:config
+	(global-tree-sitter-mode))
+      (use-package tree-sitter-langs)
+#+end_src
 ** Yaml
 #+begin_src emacs-lisp
   (use-package yaml-mode
