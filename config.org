@@ -33,6 +33,27 @@
   (setq use-package-always-ensure t)
 #+end_src
 
+** Quelpa
+
+Allow to fetch create and compile elisp packages
+#+begin_src emacs-lisp
+  (unless (package-installed-p 'quelpa)
+    (with-temp-buffer
+      (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+      (eval-buffer)
+      (quelpa-self-upgrade)))
+#+end_src
+
+Allow to use quelpa in use-package, this should install
+use-package and rquire it.
+#+begin_src emacs-lisp
+  (quelpa
+   '(quelpa-use-package
+       :fetcher git
+       :url "https://github.com/quelpa/quelpa-use-package.git"))
+  (require 'quelpa-use-package)
+#+end_src
+
 ** Try
 #+begin_src emacs-lisp
   (use-package try)
@@ -396,12 +417,17 @@ Disable default backup
 
 * Langueges
 ** Tree sitter
+
 #+begin_src emacs-lisp
-      (use-package tree-sitter
-	:config
-	(global-tree-sitter-mode))
-      (use-package tree-sitter-langs)
+  (use-package tree-sitter
+    :config
+    (global-tree-sitter-mode)
+    (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+
+  (use-package tree-sitter-langs
+    :after tree-sitter)
 #+end_src
+
 ** Yaml
 #+begin_src emacs-lisp
   (use-package yaml-mode
@@ -420,3 +446,45 @@ Disable default backup
     :init (setq markdown-command "multimarkdown"))
 #+end_src
 
+** TypeScript
+*** Typescript mode
+
+#+begin_src emacs-lisp
+  (use-package typescript-mode
+  :after tree-sitter
+  :config
+  ;; we choose this instead of tsx-mode so that eglot can automatically figure out language for server
+  ;; see https://github.com/joaotavora/eglot/issues/624 and https://github.com/joaotavora/eglot#handling-quirky-servers
+  (define-derived-mode typescriptreact-mode typescript-mode
+    "TypeScript TSX")
+
+  ;; use our derived mode for tsx files
+  (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescriptreact-mode))
+  ;; by default, typescript-mode is mapped to the treesitter typescript parser
+  ;; use our derived mode to map both .tsx AND .ts -> typescriptreact-mode -> treesitter tsx
+  (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx)))
+#+end_src
+
+*** Indentation
+
+#+begin_src emacs-lisp
+  (use-package tsi
+  :after tree-sitter
+  :quelpa (tsi :fetcher github :repo "orzechowskid/tsi.el")
+  ;; define autoload definitions which when actually invoked will cause package to be loaded
+  :commands (tsi-typescript-mode tsi-json-mode tsi-css-mode)
+  :init
+  (add-hook 'typescript-mode-hook (lambda () (tsi-typescript-mode 1)))
+  (add-hook 'json-mode-hook (lambda () (tsi-json-mode 1)))
+  (add-hook 'css-mode-hook (lambda () (tsi-css-mode 1)))
+  (add-hook 'scss-mode-hook (lambda () (tsi-scss-mode 1))))
+#+end_src
+
+*** Intelligent auto formatting 
+
+#+begin_src emacs-lisp
+  (use-package apheleia
+  :ensure t
+  :config
+  (apheleia-global-mode +1))
+#+end_src
